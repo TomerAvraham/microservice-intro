@@ -1,6 +1,6 @@
 import React from 'react'
 
-const CommentList = ({ comments }) => {
+const CommentList = ({ comments = [] }) => {
   return (
     <ul className="list-group mx-5">
         {comments.map(comment => (

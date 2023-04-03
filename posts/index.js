@@ -22,14 +22,25 @@ app.get("/posts", (req, res) => {
   res.send(posts);
 });
 
-app.post("/posts", (req, res) => {
+app.post("/posts", async (req, res) => {
   const id = crypto.randomBytes(4).toString("hex");
   posts[id] = {
     id,
     title: req.body.title,
   };
 
+  await axios.post("http://localhost:4005/event", {
+    type: "PostCreated",
+    data: posts[id],
+  });
+
   res.send({});
+});
+
+app.post("/event", (req, res) => {
+  const event = req.body;
+  console.log(`Received event type: ${event.type}`);
+  res.send();
 });
 
 app.listen(4000, () => {
