@@ -7,9 +7,9 @@ const posts = {};
 // jkh9iud : { id: jkh9iud, title: Post 1#, comment: [] }
 
 function handleEvent(event) {
-  const { data } = event;
+  const { data, type } = event;
 
-  if (event.type === "PostCreated") {
+  if (type === "PostCreated") {
     posts[data.id] = {
       id: data.id,
       title: data.title,
@@ -17,11 +17,22 @@ function handleEvent(event) {
     };
   }
 
-  if (event.type === "CommentCreated") {
-    posts[data.postId].comments.push({
-      id: data.id,
-      content: data.content,
+  if (type === "CommentCreated") {
+    const { postId, id, content, status } = data;
+    posts[postId].comments.push({
+      id,
+      content,
+      status,
     });
+  }
+
+  if (type === "CommentUpdated") {
+    const { id, postId, content, status } = data;
+    const post = posts[postId];
+    const comment = post.comments.find((comment) => comment.id === id);
+
+    comment.status = status;
+    comment.content = content;
   }
 }
 
